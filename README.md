@@ -1,18 +1,66 @@
-# Salesforce DX Project: Next Steps
+# Salesforce Delivery CRM
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+Delivery Management System built with Salesforce, Apex and Lightning Web Components (LWC).
 
-## How Do You Plan to Deploy Your Changes?
+## 🚀 Technologies
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+* Salesforce Platform
+* Apex
+* Lightning Web Components (LWC)
+* SOQL
+* DML
+* Lightning App Builder
 
-## Configure Your Salesforce DX Project
+## 📦 Current Features
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+* Delivery Client Management
+* Delivery Order Management
+* CRUD Operations
+* LWC ↔ Apex Integration
+* Dynamic Order Listing
+* Order Deletion
+* Refresh with refreshApex
 
-## Read All About It
+## 🏗️ Architecture
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+Frontend:
+
+* Lightning Web Components (LWC)
+
+Backend:
+
+* Apex Services
+
+Database:
+
+* Custom Objects & Relationships
+
+## 🔗 Data Model
+
+### Objects
+
+* Delivery_Client__c
+* Menu_Item__c
+* Delivery_Order__c
+* Delivery_Order_Item__c
+
+### Relationships
+
+* Delivery Order → Delivery Client (Lookup)
+* Delivery Order Item → Delivery Order (Master-Detail)
+* Delivery Order Item → Menu Item (Lookup)
+
+## 📈 Future Improvements
+
+* Order Item Management
+* Automatic Total Calculation
+* Apex Triggers
+* Dashboard Analytics
+* Status Workflow
+* Toast Notifications
+* Loading Spinner
+* Visual Lookup Components
+
+## 👨‍💻 Author
+
+Alex
