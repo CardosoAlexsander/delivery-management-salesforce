@@ -1,5 +1,6 @@
-<template>
 
+
+<template>
 
 <lightning-card title="Delivery Dashboard">
 
@@ -70,6 +71,93 @@
                         class="slds-m-top_small">
                     </lightning-button>
 
+                    <lightning-button
+                        label="View Items"
+                        variant="brand"
+                        data-id={order.Id}
+                        onclick={selectOrder}
+                        class="slds-m-top_small slds-m-left_small">
+                    </lightning-button>
+
+                </div>
+
+            </template>
+
+        </div>
+
+    </template>
+
+    <template if:true={selectedOrderId}>
+
+        <div class="slds-p-around_medium">
+
+            <lightning-input
+                label="Menu Item Id"
+                value={menuItemId}
+                onchange={handleMenuItemChange}>
+            </lightning-input>
+
+            <lightning-input
+                type="number"
+                label="Quantity"
+                value={quantity}
+                onchange={handleQuantityChange}
+                class="slds-m-top_small">
+            </lightning-input>
+
+            <lightning-button
+                label="Add Item"
+                variant="brand"
+                onclick={addItemToOrder}
+                class="slds-m-top_medium">
+            </lightning-button>
+
+        </div>
+
+        <div class="slds-p-around_medium">
+
+            <h2 class="slds-text-heading_medium">
+                Order Items
+            </h2>
+
+            <template
+                for:each={orderItems}
+                for:item="item">
+
+                <div
+                    key={item.Id}
+                    class="slds-box slds-m-bottom_small">
+
+                    <p>
+
+                        <strong>
+                            Product:
+                        </strong>
+
+                        {item.Menu_Item__r.Name}
+
+                    </p>
+
+                    <p>
+
+                        <strong>
+                            Quantity:
+                        </strong>
+
+                        {item.Quantity__c}
+
+                    </p>
+
+                    <p>
+
+                        <strong>
+                            Subtotal:
+                        </strong>
+
+                        {item.Subtotal__c}
+
+                    </p>
+
                 </div>
 
             </template>
@@ -82,3 +170,7 @@
 
 
 </template>
+
+
+
+
