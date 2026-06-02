@@ -45,6 +45,41 @@ public with sharing class DeliveryOrderService {
             LIMIT 1
         ];
     }
+    @AuraEnabled
+    public static void updateOrderTotal(Id orderId) {
+
+    AggregateResult result = [
+
+        SELECT SUM(Subtotal__c) total
+
+        FROM Delivery_Order_Item__c
+
+        WHERE Delivery_Order__c = :orderId
+    ];
+
+    Decimal total =
+        (Decimal) result.get('total');
+
+    if(total == null) {
+        total = 0;
+    }
+
+    Delivery_Order__c orderRecord = [
+
+        SELECT Id, Total_Amount__c
+
+        FROM Delivery_Order__c
+
+        WHERE Id = :orderId
+
+        LIMIT 1
+    ];
+
+    orderRecord.Total_Amount__c = total;
+
+    update orderRecord;
+
+    }
 
 
 }

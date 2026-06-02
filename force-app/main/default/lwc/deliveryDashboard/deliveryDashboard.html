@@ -91,11 +91,12 @@
 
         <div class="slds-p-around_medium">
 
-            <lightning-input
-                label="Menu Item Id"
+            <lightning-combobox
+                label="Menu Item"
                 value={menuItemId}
+                options={menuItemOptions}
                 onchange={handleMenuItemChange}>
-            </lightning-input>
+            </lightning-combobox>
 
             <lightning-input
                 type="number"

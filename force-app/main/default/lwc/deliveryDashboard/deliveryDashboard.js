@@ -15,13 +15,20 @@ from '@salesforce/apex/DeliveryOrderItemService.getOrderItems';
 import addOrderItem
 from '@salesforce/apex/DeliveryOrderItemService.addOrderItem';
 
-
-
 import { refreshApex }
 from '@salesforce/apex';
 
+import updateOrderTotal
+from '@salesforce/apex/DeliveryOrderService.updateOrderTotal';
+
+import getMenuItems
+from '@salesforce/apex/MenuItemService.getMenuItems';
+
 export default class DeliveryDashboard
 extends LightningElement {
+    menuItemOptions = [];
+
+    selectedMenuItemId;
 
     menuItemId = '';
 
@@ -57,6 +64,13 @@ extends LightningElement {
         this.quantity =
             event.target.value;
 
+
+    }
+
+    handleMenuItemChange(event) {
+
+        this.menuItemId =
+            event.detail.value;
 
     }
 
@@ -155,41 +169,78 @@ extends LightningElement {
 
     }
     async addItemToOrder() {
-    console.log('ADD ITEM CLICADO'); 
-    console.log(this.selectedOrderId);
-    console.log(this.menuItemId); 
-    console.log(this.quantity);
-    try {
 
-        await addOrderItem({
+        try {
 
-            orderId:
-                this.selectedOrderId,
+            console.log('ANTES ADD ITEM');
 
-            menuItemId:
-                this.menuItemId,
+            await addOrderItem({
 
-            quantity:
-                this.quantity,
+                orderId: this.selectedOrderId,
 
-            unitPrice: 10
-        });
+                menuItemId: this.menuItemId,
 
-        this.orderItems =
-            await getOrderItems({
-
-                orderId:
-                    this.selectedOrderId
+                quantity: this.quantity
             });
 
+            console.log('ITEM CRIADO');
+
+            await updateOrderTotal({
+
+                orderId: this.selectedOrderId
+
+            });
+
+            console.log('TOTAL ATUALIZADO');
+
+            this.orderItems =
+                await getOrderItems({
+
+                    orderId: this.selectedOrderId
+
+                });
+
+            console.log('ITENS RECARREGADOS');
+
+        }
+
+        catch(error) {
+
+            console.error('ERRO COMPLETO:', error);
+
+            console.error(
+                'BODY:',
+                JSON.stringify(error)
+            );
+
+        }
     }
+    @wire(getMenuItems)
+    wiredMenuItems({ error, data }) {
 
-    catch(error) {
+        if(data) {
 
-        console.error(error);
-    }
+            this.menuItemOptions = data.map(item => {
 
+                return {
 
+                    label:
+                        `${item.Name} - R$ ${item.Price__c}`,
+
+                    value:
+                        item.Id
+
+                };
+
+            });
+
+        }
+
+        else if(error) {
+
+            console.error(error);
+
+        }
     }
 
 }

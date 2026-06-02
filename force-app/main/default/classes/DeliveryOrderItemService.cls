@@ -27,10 +27,21 @@ public with sharing class DeliveryOrderItemService {
 
         Id orderId,
         Id menuItemId,
-        Decimal quantity,
-        Decimal unitPrice
+        Decimal quantity
 
     ) {
+
+        Menu_Item__c menuItem = [
+
+            SELECT Id,
+                Price__c
+
+            FROM Menu_Item__c
+
+            WHERE Id = :menuItemId
+
+            LIMIT 1
+        ];
 
         Delivery_Order_Item__c item =
             new Delivery_Order_Item__c(
@@ -38,7 +49,7 @@ public with sharing class DeliveryOrderItemService {
                 Delivery_Order__c = orderId,
                 Menu_Item__c = menuItemId,
                 Quantity__c = quantity,
-                Unit_Price__c = unitPrice
+                Unit_Price__c = menuItem.Price__c
             );
 
         insert item;
