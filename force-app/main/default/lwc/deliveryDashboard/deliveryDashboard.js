@@ -27,6 +27,9 @@ from '@salesforce/apex/MenuItemService.getMenuItems';
 import updateOrderStatus
 from '@salesforce/apex/DeliveryOrderService.updateOrderStatus';
 
+import getClients
+from '@salesforce/apex/DeliveryClientService.getClients';
+
 export default class DeliveryDashboard
 extends LightningElement {
     menuItemOptions = [];
@@ -47,6 +50,8 @@ extends LightningElement {
     orders;
 
     wiredOrdersResult;
+
+    clientOptions = [];
     
 
     handleClientChange(event) {
@@ -86,6 +91,28 @@ extends LightningElement {
         else if(result.error) {
 
             console.error(result.error);
+
+        }
+    }
+    @wire(getClients)
+    wiredClients({ data, error }) {
+
+        if(data) {
+
+            this.clientOptions = data.map(
+
+                client => ({
+
+                    label: client.Name,
+                    value: client.Id
+
+                })
+            );
+        }
+
+        else if(error) {
+
+            console.error(error);
 
         }
     }

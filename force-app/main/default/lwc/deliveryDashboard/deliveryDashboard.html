@@ -6,11 +6,17 @@
 
     <div class="slds-p-around_medium">
 
-        <lightning-input
-            label="Client Id"
+        <lightning-combobox
+
+            label="Client"
+
             value={clientId}
+
+            options={clientOptions}
+
             onchange={handleClientChange}>
-        </lightning-input>
+
+        </lightning-combobox>
 
         <lightning-button
             label="Create Order"
