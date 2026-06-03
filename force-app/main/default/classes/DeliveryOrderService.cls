@@ -80,6 +80,71 @@ public with sharing class DeliveryOrderService {
     update orderRecord;
 
     }
+    @AuraEnabled
+    public static void updateOrderStatus(
+
+        Id orderId,
+        String status
+
+    ) {
+
+        Delivery_Order__c orderRecord = [
+
+            SELECT Id,
+                Status__c
+
+            FROM Delivery_Order__c
+
+            WHERE Id = :orderId
+
+            LIMIT 1
+        ];
+
+        String currentStatus =
+            orderRecord.Status__c;
+
+        Boolean validTransition = false;
+
+        if(
+            currentStatus == 'Pending'
+            &&
+            status == 'Preparing'
+        ) {
+
+            validTransition = true;
+        }
+
+        else if(
+            currentStatus == 'Preparing'
+            &&
+            status == 'Out For Delivery'
+        ) {
+
+            validTransition = true;
+        }
+
+        else if(
+            currentStatus == 'Out For Delivery'
+            &&
+            status == 'Delivered'
+        ) {
+
+            validTransition = true;
+        }
+
+        if(!validTransition) {
+
+            throw new AuraHandledException(
+
+                'Invalid status transition.'
+
+            );
+        }
+
+        orderRecord.Status__c = status;
+
+        update orderRecord;
+    }
 
 
 }

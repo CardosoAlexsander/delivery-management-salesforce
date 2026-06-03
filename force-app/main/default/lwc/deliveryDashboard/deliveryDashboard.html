@@ -72,6 +72,33 @@
                     </lightning-button>
 
                     <lightning-button
+                        label="Prepare"
+                        variant="brand"
+                        data-id={order.Id}
+                        data-status="Preparing"
+                        onclick={changeStatus}
+                        class="slds-m-left_small">
+                    </lightning-button>
+
+                    <lightning-button
+                        label="Send Delivery"
+                        variant="success"
+                        data-id={order.Id}
+                        data-status="Out For Delivery"
+                        onclick={changeStatus}
+                        class="slds-m-left_small">
+                    </lightning-button>
+
+                    <lightning-button
+                        label="Delivered"
+                        variant="success"
+                        data-id={order.Id}
+                        data-status="Delivered"
+                        onclick={changeStatus}
+                        class="slds-m-left_small">
+                    </lightning-button>
+
+                    <lightning-button
                         label="View Items"
                         variant="brand"
                         data-id={order.Id}

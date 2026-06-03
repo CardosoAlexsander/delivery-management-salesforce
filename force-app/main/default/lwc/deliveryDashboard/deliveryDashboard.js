@@ -24,6 +24,9 @@ from '@salesforce/apex/DeliveryOrderService.updateOrderTotal';
 import getMenuItems
 from '@salesforce/apex/MenuItemService.getMenuItems';
 
+import updateOrderStatus
+from '@salesforce/apex/DeliveryOrderService.updateOrderStatus';
+
 export default class DeliveryDashboard
 extends LightningElement {
     menuItemOptions = [];
@@ -44,36 +47,30 @@ extends LightningElement {
     orders;
 
     wiredOrdersResult;
+    
 
     handleClientChange(event) {
 
         this.clientId = event.target.value;
-
     }
+    
     handleMenuItemChange(event) {
 
-
-        this.menuItemId =
-            event.target.value;
-
-
+        this.menuItemId = event.target.value;
     }
 
     handleQuantityChange(event) {
 
-        this.quantity =
-            event.target.value;
-
-
+        this.quantity = event.target.value;
     }
 
     handleMenuItemChange(event) {
 
-        this.menuItemId =
-            event.detail.value;
-
+        this.menuItemId = event.detail.value;
     }
 
+
+    
 
     @wire(getOrders)
     wiredOrders(result) {
@@ -83,19 +80,22 @@ extends LightningElement {
         if(result.data) {
 
             this.orders = result.data;
+
         }
 
         else if(result.error) {
 
             console.error(result.error);
+
         }
     }
+
     get hasOrderItems() {
 
         return this.orderItems.length > 0;
         
 
-}
+    }
 
 
     async createNewOrder() {
@@ -239,6 +239,48 @@ extends LightningElement {
         else if(error) {
 
             console.error(error);
+
+        }
+    }
+    async changeStatus(event) {
+        const orderId =
+        event.currentTarget.dataset.id;
+
+        const status =
+            event.currentTarget.dataset.status;
+
+
+        try {
+
+            await updateOrderStatus({
+
+                orderId: orderId,
+                status: status
+
+            });
+
+            console.log('STATUS ALTERADO');
+
+            await refreshApex(this.wiredOrdersResult);
+
+        }
+
+        catch(error) {
+
+            console.log(
+                'ERRO COMPLETO:',
+                JSON.stringify(error)
+            );
+
+            console.log(
+                'BODY:',
+                error.body
+            );
+
+            console.log(
+                'MESSAGE:',
+                error.body?.message
+            );
 
         }
     }
