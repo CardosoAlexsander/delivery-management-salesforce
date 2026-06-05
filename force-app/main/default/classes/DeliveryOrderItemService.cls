@@ -1,7 +1,7 @@
 public with sharing class DeliveryOrderItemService {
 
-
-    @AuraEnabled(cacheable=true)
+    // Método para buscar os itens de um pedido específico
+    @AuraEnabled
     public static List<Delivery_Order_Item__c> getOrderItems(Id orderId) {
 
         return [
@@ -22,6 +22,7 @@ public with sharing class DeliveryOrderItemService {
         ];
     }
 
+    // Método para adicionar um item a um pedido
     @AuraEnabled
     public static void addOrderItem(
 
@@ -42,7 +43,6 @@ public with sharing class DeliveryOrderItemService {
 
             LIMIT 1
         ];
-
         Delivery_Order_Item__c item =
             new Delivery_Order_Item__c(
 
@@ -55,6 +55,7 @@ public with sharing class DeliveryOrderItemService {
         insert item;
     }
 
+    // Método para excluir um item de um pedido
     @AuraEnabled
     public static void deleteOrderItem(Id itemId) {
 
@@ -66,6 +67,4 @@ public with sharing class DeliveryOrderItemService {
             LIMIT 1
         ];
     }
-
-
 }

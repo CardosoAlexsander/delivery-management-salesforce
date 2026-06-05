@@ -1,6 +1,6 @@
 public with sharing class DeliveryOrderService {
 
-
+    // Método para buscar os pedidos de entrega
     @AuraEnabled(cacheable=true)
     public static List<Delivery_Order__c> getOrders() {
 
@@ -19,6 +19,8 @@ public with sharing class DeliveryOrderService {
         ];
     }
 
+
+    // Método para criar um novo pedido
     @AuraEnabled
     public static Delivery_Order__c createOrder(Id clientId) {
 
@@ -45,9 +47,11 @@ public with sharing class DeliveryOrderService {
             LIMIT 1
         ];
     }
+
+
+    // Método para atualizar o total do pedido com base nos itens
     @AuraEnabled
     public static void updateOrderTotal(Id orderId) {
-
     AggregateResult result = [
 
         SELECT SUM(Subtotal__c) total
@@ -74,12 +78,12 @@ public with sharing class DeliveryOrderService {
 
         LIMIT 1
     ];
-
     orderRecord.Total_Amount__c = total;
-
     update orderRecord;
-
     }
+
+
+    // Método para alterar o status do pedido
     @AuraEnabled
     public static void updateOrderStatus(
 
@@ -140,11 +144,8 @@ public with sharing class DeliveryOrderService {
 
             );
         }
-
         orderRecord.Status__c = status;
 
         update orderRecord;
     }
-
-
 }

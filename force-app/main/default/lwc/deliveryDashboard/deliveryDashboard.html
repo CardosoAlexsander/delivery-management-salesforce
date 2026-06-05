@@ -3,6 +3,69 @@
 <template>
 
 <lightning-card title="Delivery Dashboard">
+    <template if:true={dashboardData}>
+
+        <div class="slds-grid slds-gutters slds-p-around_medium">
+
+            <div class="slds-col">
+
+                <lightning-card title="Orders">
+
+                    <div class="slds-p-around_medium">
+
+                        {dashboardData.totalOrders}
+
+                    </div>
+
+                </lightning-card>
+
+            </div>
+
+            <div class="slds-col">
+
+                <lightning-card title="Revenue">
+
+                    <div class="slds-p-around_medium">
+
+                        ${dashboardData.totalRevenue}
+
+                    </div>
+
+                </lightning-card>
+
+            </div>
+
+            <div class="slds-col">
+
+                <lightning-card title="Pending">
+
+                    <div class="slds-p-around_medium">
+
+                        {dashboardData.pendingOrders}
+
+                    </div>
+
+                </lightning-card>
+
+            </div>
+
+            <div class="slds-col">
+
+                <lightning-card title="Delivered">
+
+                    <div class="slds-p-around_medium">
+
+                        {dashboardData.deliveredOrders}
+
+                    </div>
+
+                </lightning-card>
+
+            </div>
+
+        </div>
+
+    </template>
 
     <div class="slds-p-around_medium">
 
@@ -108,6 +171,7 @@
                         label="View Items"
                         variant="brand"
                         data-id={order.Id}
+                        data-name={order.Name}
                         onclick={selectOrder}
                         class="slds-m-top_small slds-m-left_small">
                     </lightning-button>
@@ -149,7 +213,18 @@
         </div>
 
         <div class="slds-p-around_medium">
+            
+            <template if:true={selectedOrderName}>
+                <h2
+                    class="slds-text-heading_medium
+                        slds-m-bottom_small">
 
+                    Editing Order:
+                    {selectedOrderName}
+
+                </h2>
+
+            </template>
             <h2 class="slds-text-heading_medium">
                 Order Items
             </h2>

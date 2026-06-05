@@ -30,6 +30,12 @@ from '@salesforce/apex/DeliveryOrderService.updateOrderStatus';
 import getClients
 from '@salesforce/apex/DeliveryClientService.getClients';
 
+import getDashboardData
+from '@salesforce/apex/DeliveryDashboardService.getDashboardData';
+
+import { ShowToastEvent }
+from 'lightning/platformShowToastEvent';
+
 export default class DeliveryDashboard
 extends LightningElement {
     menuItemOptions = [];
@@ -52,23 +58,33 @@ extends LightningElement {
     wiredOrdersResult;
 
     clientOptions = [];
-    
 
+    dashboardData;
+
+    wiredDashboardResult;
+
+    selectedOrderName;
+
+    
+    // Evento para mudança do cliente
     handleClientChange(event) {
 
         this.clientId = event.target.value;
     }
     
+    // Evento para mudança do item do menu
     handleMenuItemChange(event) {
 
         this.menuItemId = event.target.value;
     }
 
+    //Evento para mudança da quantidade
     handleQuantityChange(event) {
 
         this.quantity = event.target.value;
     }
 
+    //Evento para mudança do item do menu (usado no combo de adição de item)
     handleMenuItemChange(event) {
 
         this.menuItemId = event.detail.value;
@@ -76,7 +92,7 @@ extends LightningElement {
 
 
     
-
+    //Evento para mudança da quantidade (usado no combo de adição de item)
     @wire(getOrders)
     wiredOrders(result) {
 
@@ -94,6 +110,8 @@ extends LightningElement {
 
         }
     }
+
+    //Evento para carregar os clientes no combo de seleção
     @wire(getClients)
     wiredClients({ data, error }) {
 
@@ -117,6 +135,28 @@ extends LightningElement {
         }
     }
 
+    //Evento para carregar os dados do dashboard
+    @wire(getDashboardData)
+    wiredDashboard(result) {
+
+        this.wiredDashboardResult =
+            result;
+
+        if(result.data) {
+
+            this.dashboardData =
+                result.data;
+        }
+
+        else if(result.error) {
+
+            console.error(
+                result.error
+            );
+        }
+    }
+
+    // Getter para verificar se há itens no pedido selecionado
     get hasOrderItems() {
 
         return this.orderItems.length > 0;
@@ -124,7 +164,7 @@ extends LightningElement {
 
     }
 
-
+    // Método para criar um novo pedido
     async createNewOrder() {
 
         try {
@@ -137,15 +177,18 @@ extends LightningElement {
             await refreshApex(
                 this.wiredOrdersResult
             );
+            await refreshApex(
+                this.wiredDashboardResult
+            );
 
         }
-
         catch(error) {
 
             console.error(error);
         }
     }
 
+    // Método para deletar o pedido selecionado
     async deleteSelectedOrder(event) {
 
         const orderId =
@@ -161,20 +204,27 @@ extends LightningElement {
             await refreshApex(
                 this.wiredOrdersResult
             );
-
+            await refreshApex(
+                this.wiredDashboardResult
+            );
         }
-
         catch(error) {
 
             console.error(error);
         }
     }
+
+    // Método para selecionar um pedido e carregar seus itens
     async selectOrder(event) {
 
         console.log('CLICK FUNCIONOU');
 
         this.selectedOrderId =
             event.target.dataset.id;
+       
+
+        this.selectedOrderName =
+            event.target.dataset.name;
 
         try {
 
@@ -185,16 +235,12 @@ extends LightningElement {
                         this.selectedOrderId
                 });
         }
-
         catch(error) {
-
             console.error(error);
-            
-
         }
-
-
     }
+
+    // Método para adicionar um item ao pedido selecionado
     async addItemToOrder() {
 
         try {
@@ -220,28 +266,61 @@ extends LightningElement {
 
             console.log('TOTAL ATUALIZADO');
 
-            this.orderItems =
+            const items =
                 await getOrderItems({
 
                     orderId: this.selectedOrderId
 
                 });
 
+            console.log(
+                'ORDER ITEMS:',
+                JSON.stringify(items)
+            );
+
+            this.orderItems = [...items];
+
             console.log('ITENS RECARREGADOS');
 
-        }
+            await refreshApex(
+                this.wiredOrdersResult
+            );
 
-        catch(error) {
+            await refreshApex(
+                this.wiredDashboardResult
+            );
+            //mensagem de sucesso e limpeza dos campos
+            this.dispatchEvent(
 
-            console.error('ERRO COMPLETO:', error);
+                new ShowToastEvent({
 
-            console.error(
-                'BODY:',
-                JSON.stringify(error)
+                    title: 'Success',
+
+                    message:
+                        'Item added successfully!',
+
+                    variant: 'success'
+                })
+            );
+            this.menuItemId = '';
+
+            this.quantity = 1;
+
+            console.log(
+                'DASHBOARD ATUALIZADO'
             );
 
         }
+        catch(error) {
+
+            console.error(
+                'ERRO COMPLETO:',
+                error
+            );
+        }
     }
+
+    // Método para carregar os itens do menu e formatar as opções para o combo
     @wire(getMenuItems)
     wiredMenuItems({ error, data }) {
 
@@ -258,25 +337,21 @@ extends LightningElement {
                         item.Id
 
                 };
-
             });
-
         }
-
         else if(error) {
 
             console.error(error);
-
         }
     }
+
+    // Método para alterar o status do pedido
     async changeStatus(event) {
         const orderId =
         event.currentTarget.dataset.id;
 
         const status =
             event.currentTarget.dataset.status;
-
-
         try {
 
             await updateOrderStatus({
@@ -289,9 +364,10 @@ extends LightningElement {
             console.log('STATUS ALTERADO');
 
             await refreshApex(this.wiredOrdersResult);
-
+            await refreshApex(
+                this.wiredDashboardResult
+            );
         }
-
         catch(error) {
 
             console.log(
@@ -308,8 +384,6 @@ extends LightningElement {
                 'MESSAGE:',
                 error.body?.message
             );
-
         }
     }
-
 }
