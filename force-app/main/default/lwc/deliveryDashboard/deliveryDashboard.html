@@ -158,7 +158,18 @@
                             Status:
                         </strong>
 
-                        {order.Status__c}
+                        <span class={order.statusClass}>
+
+                            {order.Status__c}
+
+                        </span>
+
+                    </p>
+
+                    <p class="order-total">
+
+                        Total:
+                        R$ {order.Total_Amount__c}
 
                     </p>
 

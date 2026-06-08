@@ -37,3 +37,60 @@
     padding: 20px;
 
 }
+
+.order-total {
+
+    font-size: 1.4rem;
+
+    font-weight: bold;
+
+    color: #15803d;
+
+}
+.status-pending {
+
+    background: #fef3c7;
+
+    padding: 4px 10px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+
+}
+
+.status-preparing {
+
+    background: #dbeafe;
+
+    padding: 4px 10px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+
+}
+
+.status-delivery {
+
+    background: #fed7aa;
+
+    padding: 4px 10px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+
+}
+
+.status-delivered {
+
+    background: #dcfce7;
+
+    padding: 4px 10px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
+
+}

@@ -94,13 +94,53 @@ extends LightningElement {
             this.orders =
                 result.data.map(order => {
 
+                    let statusClass = '';
+
+                    const status =
+                        order.Status__c?.trim();
+
+                    if(status === 'Pending') {
+
+                        statusClass =
+                            'status-pending';
+
+                    }
+
+                    else if(status === 'Preparing') {
+
+                        statusClass =
+                            'status-preparing';
+
+                    }
+
+                    else if(status.includes('Delivery')) {
+
+                        statusClass =
+                            'status-delivery';
+
+                    }
+
+                    else if(status === 'Delivered') {
+
+                        statusClass =
+                            'status-delivered';
+
+                    }
+
+                    console.log(
+                        'CLASSE:',
+                        statusClass
+                    );
+
                     return {
 
                         ...order,
 
                         isExpanded:
                             order.Id ===
-                            this.expandedOrderId
+                            this.expandedOrderId,
+
+                        statusClass
 
                     };
 
