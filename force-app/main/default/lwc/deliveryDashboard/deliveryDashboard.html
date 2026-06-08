@@ -1,6 +1,7 @@
 
 
 <template>
+    
 
 <lightning-card title="Delivery Dashboard">
     <template if:true={dashboardData}>
@@ -8,58 +9,87 @@
         <div class="slds-grid slds-gutters slds-p-around_medium">
 
             <div class="slds-col">
+                <div class="kpi-box"> 
+                    <lightning-card>
 
-                <lightning-card title="Orders">
+                        <div class="kpi-title">
 
-                    <div class="slds-p-around_medium">
+                            📦 Total Orders
 
-                        {dashboardData.totalOrders}
+                        </div>
 
-                    </div>
+                        <div class="kpi-value">
 
-                </lightning-card>
+                            ${dashboardData.totalOrders}
 
-            </div>
+                        </div>
 
-            <div class="slds-col">
-
-                <lightning-card title="Revenue">
-
-                    <div class="slds-p-around_medium">
-
-                        ${dashboardData.totalRevenue}
-
-                    </div>
-
-                </lightning-card>
+                    </lightning-card>
+                </div>
 
             </div>
 
             <div class="slds-col">
+                <div class="kpi-box"> 
+                    <lightning-card>
 
-                <lightning-card title="Pending">
+                        <div class="kpi-title">
 
-                    <div class="slds-p-around_medium">
+                            💰 Revenue
 
-                        {dashboardData.pendingOrders}
+                        </div>
 
-                    </div>
+                        <div class="kpi-value">
 
-                </lightning-card>
+                            ${dashboardData.totalRevenue}
+
+                        </div>
+
+                    </lightning-card>
+                </div>
+
+            </div>
+            
+
+            <div class="slds-col">
+                <div class="kpi-box">
+                    <lightning-card>
+
+                        <div class="kpi-title">
+
+                            ⏳ Pending
+
+                        </div>
+
+                        <div class="kpi-value">
+
+                            ${dashboardData.pendingOrders}
+
+                        </div>
+
+                    </lightning-card>
+                </div>
 
             </div>
 
             <div class="slds-col">
+                <div class="kpi-box"> 
+                    <lightning-card>
 
-                <lightning-card title="Delivered">
+                        <div class="kpi-title">
 
-                    <div class="slds-p-around_medium">
+                            ✅ Delivered
 
-                        {dashboardData.deliveredOrders}
+                        </div>
 
-                    </div>
+                        <div class="kpi-value">
 
-                </lightning-card>
+                            ${dashboardData.deliveredOrders}
+
+                        </div>
+
+                    </lightning-card>
+                </div>
 
             </div>
 
@@ -176,107 +206,126 @@
                         class="slds-m-top_small slds-m-left_small">
                     </lightning-button>
 
+                    <template if:true={order.isExpanded}>
+
+                        <div
+                            class="slds-box
+                                slds-theme_shade
+                                slds-m-top_medium">
+
+                            <h3
+                                class="slds-text-heading_medium
+                                    slds-m-bottom_small">
+
+                                Editing Order:
+                                {order.Name}
+
+                            </h3>
+
+                            <template
+                                for:each={orderItems}
+                                for:item="item">
+
+                                <div
+                                    key={item.Id}
+                                    class="slds-box
+                                        slds-m-bottom_small">
+
+                                    <p>
+
+                                        <strong>
+                                            Product:
+                                        </strong>
+
+                                        {item.Menu_Item__r.Name}
+
+                                    </p>
+
+                                    <p>
+
+                                        <strong>
+                                            Quantity:
+                                        </strong>
+
+                                        {item.Quantity__c}
+
+                                    </p>
+
+                                    <p>
+
+                                        <strong>
+                                            Subtotal:
+                                        </strong>
+
+                                        {item.Subtotal__c}
+
+                                    </p>
+                                    <lightning-button
+                                        label="Delete"
+                                        variant="destructive"
+                                        data-id={item.Id}
+                                        onclick={deleteItem}
+                                        class="slds-m-top_small">
+                                    </lightning-button>
+
+                                </div>
+
+                            </template>
+                            
+                            <div class="slds-m-top_medium">
+
+                                <lightning-combobox
+                                    label="Menu Item"
+                                    value={menuItemId}
+                                    options={menuItemOptions}
+                                    onchange={handleMenuItemChange}>
+                                </lightning-combobox>
+
+                                <lightning-input
+                                    type="number"
+                                    label="Quantity"
+                                    value={quantity}
+                                    onchange={handleQuantityChange}>
+                                </lightning-input>
+
+                                <lightning-button
+                                    label="Add Item"
+                                    variant="brand"
+                                    onclick={addItemToOrder}
+                                    class="slds-m-top_small">
+                                </lightning-button>
+
+                                <lightning-button
+                                label="Close"
+                                variant="neutral"
+                                data-id={order.Id}
+                                data-name={order.Name}
+                                onclick={selectOrder}>
+                                </lightning-button>
+
+
+                            </div>
+
+                            
+                        </div>
+
+                    </template>
+                    <template if:true={selectedOrderId}>
+
+                        <template lwc:if={order.Id}>
+
+                        </template>
+
+                    </template>
                 </div>
 
             </template>
 
         </div>
 
-    </template>
-
-    <template if:true={selectedOrderId}>
-
-        <div class="slds-p-around_medium">
-
-            <lightning-combobox
-                label="Menu Item"
-                value={menuItemId}
-                options={menuItemOptions}
-                onchange={handleMenuItemChange}>
-            </lightning-combobox>
-
-            <lightning-input
-                type="number"
-                label="Quantity"
-                value={quantity}
-                onchange={handleQuantityChange}
-                class="slds-m-top_small">
-            </lightning-input>
-
-            <lightning-button
-                label="Add Item"
-                variant="brand"
-                onclick={addItemToOrder}
-                class="slds-m-top_medium">
-            </lightning-button>
-
-        </div>
-
-        <div class="slds-p-around_medium">
-            
-            <template if:true={selectedOrderName}>
-                <h2
-                    class="slds-text-heading_medium
-                        slds-m-bottom_small">
-
-                    Editing Order:
-                    {selectedOrderName}
-
-                </h2>
-
-            </template>
-            <h2 class="slds-text-heading_medium">
-                Order Items
-            </h2>
-
-            <template
-                for:each={orderItems}
-                for:item="item">
-
-                <div
-                    key={item.Id}
-                    class="slds-box slds-m-bottom_small">
-
-                    <p>
-
-                        <strong>
-                            Product:
-                        </strong>
-
-                        {item.Menu_Item__r.Name}
-
-                    </p>
-
-                    <p>
-
-                        <strong>
-                            Quantity:
-                        </strong>
-
-                        {item.Quantity__c}
-
-                    </p>
-
-                    <p>
-
-                        <strong>
-                            Subtotal:
-                        </strong>
-
-                        {item.Subtotal__c}
-
-                    </p>
-
-                </div>
-
-            </template>
-
-        </div>
-
-    </template>
+    </template>  
 
 </lightning-card>
-
 
 </template>
 

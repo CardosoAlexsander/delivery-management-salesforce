@@ -36,6 +36,7 @@ public with sharing class DeliveryOrderService {
         return newOrder;
     }
 
+    // Método para deletar um pedido
     @AuraEnabled
     public static void deleteOrder(Id orderId) {
 

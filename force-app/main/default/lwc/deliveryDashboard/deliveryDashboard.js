@@ -36,34 +36,25 @@ from '@salesforce/apex/DeliveryDashboardService.getDashboardData';
 import { ShowToastEvent }
 from 'lightning/platformShowToastEvent';
 
+import deleteOrderItem
+from '@salesforce/apex/DeliveryOrderItemService.deleteOrderItem';
+
 export default class DeliveryDashboard
 extends LightningElement {
     menuItemOptions = [];
-
     selectedMenuItemId;
-
     menuItemId = '';
-
     quantity = 1;
-
     selectedOrderId;
-
     orderItems = [];
-
-
     clientId = '';
-
     orders;
-
     wiredOrdersResult;
-
     clientOptions = [];
-
     dashboardData;
-
     wiredDashboardResult;
-
     selectedOrderName;
+    expandedOrderId;
 
     
     // Evento para mudança do cliente
@@ -100,7 +91,20 @@ extends LightningElement {
 
         if(result.data) {
 
-            this.orders = result.data;
+            this.orders =
+                result.data.map(order => {
+
+                    return {
+
+                        ...order,
+
+                        isExpanded:
+                            order.Id ===
+                            this.expandedOrderId
+
+                    };
+
+                });
 
         }
 
@@ -164,6 +168,13 @@ extends LightningElement {
 
     }
 
+    // Getter para verificar se um pedido está selecionado
+    get hasSelectedOrder() {
+
+        return this.selectedOrderId != null;
+
+    }
+
     // Método para criar um novo pedido
     async createNewOrder() {
 
@@ -217,14 +228,58 @@ extends LightningElement {
     // Método para selecionar um pedido e carregar seus itens
     async selectOrder(event) {
 
-        console.log('CLICK FUNCIONOU');
+        const orderId =
+            event.target.dataset.id;
+
+        const orderName =
+            event.target.dataset.name;
+
+        if(this.expandedOrderId === orderId) {
+
+            this.expandedOrderId = null;
+
+            this.selectedOrderId = null;
+
+            this.orderItems = [];
+
+            this.orders =
+                this.orders.map(order => {
+
+                    return {
+
+                        ...order,
+
+                        isExpanded: false
+
+                    };
+
+                });
+
+            return;
+        }
 
         this.selectedOrderId =
-            event.target.dataset.id;
-       
+            orderId;
 
         this.selectedOrderName =
-            event.target.dataset.name;
+            orderName;
+
+        this.expandedOrderId =
+            orderId;
+
+        this.orders =
+            this.orders.map(order => {
+
+                return {
+
+                    ...order,
+
+                    isExpanded:
+                        order.Id === orderId
+
+                };
+
+            });
 
         try {
 
@@ -233,11 +288,17 @@ extends LightningElement {
 
                     orderId:
                         this.selectedOrderId
+
                 });
+
         }
+
         catch(error) {
+
             console.error(error);
+
         }
+
     }
 
     // Método para adicionar um item ao pedido selecionado
@@ -385,5 +446,67 @@ extends LightningElement {
                 error.body?.message
             );
         }
+    }
+
+    // Método para deletar um item do pedido
+    async deleteItem(event) {
+
+        const itemId =
+            event.target.dataset.id;
+
+        try {
+
+            await deleteOrderItem({
+
+                itemId: itemId
+
+            });
+
+            await updateOrderTotal({
+
+                orderId: this.selectedOrderId
+
+            });
+
+            const items =
+                await getOrderItems({
+
+                    orderId: this.selectedOrderId
+
+                });
+
+            this.orderItems = [...items];
+
+            await refreshApex(
+                this.wiredOrdersResult
+            );
+
+            await refreshApex(
+                this.wiredDashboardResult
+            );
+
+            this.dispatchEvent(
+
+                new ShowToastEvent({
+
+                    title: 'Success',
+
+                    message:
+                        'Item deleted successfully!',
+
+                    variant: 'success'
+
+                })
+
+            );
+
+        }
+
+        catch(error) {
+
+            console.error(error);
+
+        }
+
     }
 }

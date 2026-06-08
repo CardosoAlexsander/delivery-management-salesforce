@@ -1,0 +1,39 @@
+
+
+.kpi-box {
+
+    border: 2px solid #d8dde6;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    margin: 10px;
+
+    text-align: center;
+
+}
+
+.kpi-title {
+
+    text-align: center;
+
+    font-size: 1.1rem;
+
+    font-weight: bold;
+
+    margin-top: 10px;
+
+}
+
+.kpi-value {
+
+    text-align: center;
+
+    font-size: 2rem;
+
+    font-weight: bold;
+
+    padding: 20px;
+
+}

@@ -6,11 +6,8 @@ public with sharing class DeliveryClientService {
 
         return [
 
-            SELECT Id,
-                   Name
-
+            SELECT Id,Name
             FROM Delivery_Client__c
-
             ORDER BY Name
         ];
     }

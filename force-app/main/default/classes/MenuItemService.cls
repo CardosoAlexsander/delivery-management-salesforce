@@ -1,4 +1,5 @@
 public with sharing class MenuItemService {
+    
     // Método para buscar os itens do menu
     @AuraEnabled(cacheable=true)
     public static List<Menu_Item__c> getMenuItems() {
