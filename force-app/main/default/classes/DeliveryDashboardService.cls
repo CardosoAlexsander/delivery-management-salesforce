@@ -14,6 +14,9 @@ public with sharing class DeliveryDashboardService {
 
         @AuraEnabled
         public Integer deliveredOrders;
+
+        @AuraEnabled
+        public Decimal averageOrderValue;
     }
 
 
@@ -63,6 +66,19 @@ public with sharing class DeliveryDashboardService {
 
             WHERE Status__c = 'Delivered'
         ];
+        if(data.totalOrders > 0) {
+
+            data.averageOrderValue =
+                data.totalRevenue /
+                data.totalOrders;
+
+        }
+
+        else {
+
+            data.averageOrderValue = 0;
+
+        }
 
         return data;
     }
